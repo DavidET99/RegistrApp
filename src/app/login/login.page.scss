@@ -1,0 +1,65 @@
+
+.header-toolbar {
+  --background: linear-gradient(135deg, #0599d3, #1e3a8a);
+  --color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.header-logo {
+  height: 60px;
+  margin-right: 10px;
+}
+
+@keyframes animarFondo {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+  background: linear-gradient(270deg, #15b8ce, #0599d3, #1fa387, #1a9bce, #806db3);
+  background-size: 400% 400%;
+  animation: animarFondo 15s ease infinite;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.login-input {
+  margin-bottom: 15px;
+}
+
+ion-button {
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+ion-footer {
+  ion-toolbar {
+    --background: linear-gradient(135deg, #0599d3, #1e3a8a);
+    --color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}

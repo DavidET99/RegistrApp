@@ -1,0 +1,62 @@
+.header-toolbar {
+  --background: linear-gradient(135deg, #0599d3, #1e3a8a);
+  --color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.header-logo {
+  height: 60px;
+  margin-right: 40px;
+}
+
+.welcome-card{
+  text-align: center;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+
+}
+
+@keyframes animarFondo {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.asistencia-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+  background: linear-gradient(270deg, #15b8ce, #0599d3, #1fa387, #1a9bce, #806db3);
+  background-size: 400% 400%;
+  animation: animarFondo 15s ease infinite;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 55%;
+  left: 44%;
+  transform: translate(-50%, -50%);
+  display: block;
+  margin: 10px auto;
+}
+.loading-container {
+  display: flex;
+  align-items: center;
+}
+.loading-message {
+  margin-top: 50px;
+}

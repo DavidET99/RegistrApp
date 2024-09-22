@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-title class="header-title ion-text-center">
+      <img src="assets/img/logo_duoc.png" alt="Logo" class="header-logo" />
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="login-container">
+    <ion-card class="login-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Inicio de Sesión</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="formlogin">
+          <ion-item class="login-input">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input formControlName="nombre"></ion-input>
+          </ion-item>
+          <ion-item class="login-input">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input formControlName="pass" type="password"></ion-input>
+          </ion-item>
+          <ion-button expand="block" (click)="ingresar()" color="secondary" [disabled]="!formlogin.valid">
+            Ingresar
+          </ion-button>
+        </form>
+
+        <div class="ion-text-center">
+          <ion-button fill="clear" color="tertiary" [routerLink]="['/registro']">
+            ¿No tienes una cuenta? <strong style="color: rgb(83, 156, 34);">Regístrate</strong>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title size="medium" class="ion-text-center">RegistrApp © 2024</ion-title>
+  </ion-toolbar>
+</ion-footer>

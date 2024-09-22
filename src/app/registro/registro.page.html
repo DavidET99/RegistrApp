@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="back-button" text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title">RegistrApp</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="register-container">
+    <ion-card class="register-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Registro</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="formRegistro" (ngSubmit)="guardar()">
+          <ion-item class="register-input">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input formControlName="nombre"></ion-input>
+          </ion-item>
+          <ion-item class="register-input">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input formControlName="pass" type="password"></ion-input>
+          </ion-item>
+          <ion-item class="register-input">
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input formControlName="confirmacionpass" type="password"></ion-input>
+          </ion-item>
+          <br>
+          <ion-button expand="full" type="submit" color="primary">Registrarse</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title size="small" class="ion-text-center">RegistrApp © 2024</ion-title>
+  </ion-toolbar>
+</ion-footer>
