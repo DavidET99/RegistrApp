@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
+
+interface Usuario {
+  nombre: string;
+  pass: string;
+  tipo: string;
+}
 
 @Component({
   selector: 'app-registro',
@@ -11,54 +17,55 @@ export class RegistroPage implements OnInit {
   formRegistro: FormGroup;
 
   constructor(
-    public fb: FormBuilder,
-    public alertController: AlertController,
-    public nav: NavController
+    private fb: FormBuilder,
+    private alertController: AlertController,
+    private nav: NavController
   ) {
     this.formRegistro = this.fb.group({
       nombre: ['', Validators.required],
       pass: ['', [Validators.required, Validators.minLength(6)]],
       confirmacionpass: ['', Validators.required]
-    }, { validator: this.passwordMatchValidator });
+    }, { validators: this.passwordMatchValidator });
   }
 
   ngOnInit() {}
 
   private passwordMatchValidator(group: FormGroup) {
-    const pass = group.get('pass')?.value;
-    const confirmacionpass = group.get('confirmacionpass')?.value;
-
-    return pass === confirmacionpass ? null : { mismatch: true };
+    return group.get('pass')?.value === group.get('confirmacionpass')?.value ? null : { mismatch: true };
   }
 
   async guardar() {
     if (this.formRegistro.invalid) {
-      const alert = await this.alertController.create({
-        message: 'Por favor, complete todos los campos correctamente.',
-        buttons: ['Aceptar']
-      });
-      await alert.present();
+      await this.mostrarAlerta('Por favor, complete todos los campos correctamente.');
       return;
     }
 
     const f = this.formRegistro.value;
 
-    const usuario = {
+    const usuario: Usuario = {
       nombre: f.nombre,
-      pass: f.pass
+      pass: f.pass,
+      tipo: 'alumno'
     };
 
-    const usuariosGuardados = localStorage.getItem('usuarios');
-    let usuarios = [];
-
-    if (usuariosGuardados) {
-      usuarios = JSON.parse(usuariosGuardados);
-    }
-
-    usuarios.push(usuario);
-
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    this.guardarUsuario(usuario);
 
     this.nav.navigateRoot('login');
+  }
+
+  private guardarUsuario(usuario: Usuario) {
+    const usuariosGuardados = localStorage.getItem('usuarios');
+    const usuarios = usuariosGuardados ? JSON.parse(usuariosGuardados) : [];
+
+    usuarios.push(usuario);
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  }
+
+  private async mostrarAlerta(mensaje: string) {
+    const alert = await this.alertController.create({
+      message: mensaje,
+      buttons: ['Aceptar']
+    });
+    await alert.present();
   }
 }

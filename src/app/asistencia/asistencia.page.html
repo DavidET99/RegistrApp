@@ -19,7 +19,7 @@
         <ion-grid>
           <ion-row class="ion-justify-content-center ion-margin-bottom">
             <ion-col size="auto">
-              <ion-button expand="block" fill="solid" color="tertiary" (click)="onGenerateCode()">
+              <ion-button expand="block" fill="solid" color="tertiary" [disabled]="!esAdmin" (click)="onGenerateCode()">
                 <ion-icon slot="start" name="qr-code-outline"></ion-icon>
                 Generar código
               </ion-button>
