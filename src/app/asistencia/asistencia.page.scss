@@ -4,6 +4,25 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.clima-toolbar {
+  --background: #2d9cdb;
+  color: white;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+.clima-toolbar ion-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  color: white;
+}
+
+.clima-toolbar p {
+  margin: 0;
+  font-weight: bold;
+  color: white;
+}
+
 .header-title {
   display: flex;
   align-items: center;
@@ -59,4 +78,14 @@
 }
 .loading-message {
   margin-top: 50px;
+}
+
+.logout{
+  background-color: red;
+  color: white;
+  border-radius: 20px;
+}
+
+.logout:hover{
+  background-color: darkred;
 }

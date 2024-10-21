@@ -1,11 +1,30 @@
 <ion-header>
   <ion-toolbar class="header-toolbar">
-    <ion-buttons slot="start">
-      <ion-back-button class="back-button" text="" defaultHref="/"></ion-back-button>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" class="logout" >Cerrar Sesión</ion-button>
     </ion-buttons>
     <ion-title class="header-title ion-text-center">
       <img src="assets/img/logo_duoc.png" alt="Logo" class="header-logo" />
     </ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar color="tertiary" class="clima-toolbar" *ngIf="climaInfo">
+    <ion-grid>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="auto">
+          <ion-icon name="cloud-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="auto">
+          <p>{{ climaInfo.name }} - {{ climaInfo.weather[0].description }}</p>
+        </ion-col>
+        <ion-col size="auto">
+          <p>{{ climaInfo.main.temp }} °C</p>
+        </ion-col>
+        <ion-col size="auto">
+          <p>Humedad: {{ climaInfo.main.humidity }}%</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 </ion-header>
 
@@ -39,21 +58,4 @@
       </ion-card-content>
     </ion-card>
   </div>
-  <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="isModalOpen = false">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Escanea aqui⬇</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="isModalOpen = false">
-              <ion-icon name="close"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <img src="assets/img/qr.png" alt="Código" style="width: 100%; height: auto;"/>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
 </ion-content>
