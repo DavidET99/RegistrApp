@@ -15,6 +15,7 @@ export class AsistenciaPage implements OnInit {
   isLoading = false;
   esAdmin: boolean = false;
   climaInfo: any;
+  qrCodeData: string = '';
 
   private climaService: ClimaService;
 
@@ -49,6 +50,8 @@ export class AsistenciaPage implements OnInit {
     if (!this.esAdmin) {
       return;
     }
+
+    this.qrCodeData = `Asistencia - ${this.nombreUsuario} - ${new Date().toLocaleString()}`;
 
     this.isLoading = true;
     setTimeout(() => {

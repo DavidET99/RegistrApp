@@ -58,4 +58,24 @@
       </ion-card-content>
     </ion-card>
   </div>
+
+  <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="isModalOpen = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Escanea el código QR</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isModalOpen = false">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div class="qr-container">
+          <qrcode [qrdata]="qrCodeData" [width]="545"></qrcode>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
