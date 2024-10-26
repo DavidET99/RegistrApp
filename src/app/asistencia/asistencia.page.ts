@@ -1,8 +1,9 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { ClimaService } from '../services/clima.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { StorageService } from '../services/storage.service';
+import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 
 @Component({
   selector: 'app-asistencia',
@@ -19,7 +20,8 @@ export class AsistenciaPage implements OnInit {
 
   private climaService: ClimaService;
 
-  constructor(private nav: NavController,private storageService: StorageService, private injector: Injector) {
+  constructor(private nav: NavController,private storageService: StorageService,
+    private injector: Injector, private platform: Platform) {
     this.climaService = this.injector.get(ClimaService);
   }
 
@@ -59,6 +61,30 @@ export class AsistenciaPage implements OnInit {
       this.isModalOpen = true;
     }, 3000);
   }
+
+  async scanQRCode() {
+    try {
+      const result = await BarcodeScanner.scan() as any;
+      console.log(result);
+
+      if (result && result.content) {
+        const content = result.content;
+
+        if (content === this.qrCodeData) {
+          await this.storageService.set(`presente_${this.nombreUsuario}`, true);
+          alert('Asistencia registrada correctamente');
+        } else {
+          alert('Código QR no válido');
+        }
+      } else {
+        alert('No se encontró ningún código QR.');
+      }
+    } catch (error) {
+      console.error('Error escaneando el código:', error);
+      alert('Error escaneando el código QR');
+    }
+  }
+
 
   async logout() {
     await this.storageService.remove('ingresado');

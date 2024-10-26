@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="header-toolbar">
     <ion-buttons slot="end">
-      <ion-button (click)="logout()" class="logout" >Cerrar Sesión</ion-button>
+      <ion-button (click)="logout()" class="logout">Cerrar Sesión</ion-button>
     </ion-buttons>
     <ion-title class="header-title ion-text-center">
       <img src="assets/img/logo_duoc.png" alt="Logo" class="header-logo" />
@@ -47,10 +47,11 @@
                 <p class="loading-message">Generando código, espere...</p>
               </div>
             </ion-col>
+
             <ion-col size="auto">
-              <ion-button expand="block" fill="solid" color="secondary" [routerLink]="['/camera']">
+              <ion-button expand="block" fill="solid" color="secondary" (click)="scanQRCode()">
                 <ion-icon slot="start" name="camera-outline"></ion-icon>
-                Desplegar cámara
+                Escanear QR
               </ion-button>
             </ion-col>
           </ion-row>
