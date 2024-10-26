@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
+import { StorageService } from '../services/storage.service';
 
 interface Usuario {
   nombre: string;
@@ -19,7 +20,8 @@ export class RegistroPage implements OnInit {
   constructor(
     private fb: FormBuilder,
     private alertController: AlertController,
-    private nav: NavController
+    private nav: NavController,
+    private storageService: StorageService
   ) {
     this.formRegistro = this.fb.group({
       nombre: ['', Validators.required],
@@ -48,17 +50,13 @@ export class RegistroPage implements OnInit {
       tipo: 'alumno'
     };
 
-    this.guardarUsuario(usuario);
-
-    this.nav.navigateRoot('login');
-  }
-
-  private guardarUsuario(usuario: Usuario) {
-    const usuariosGuardados = localStorage.getItem('usuarios');
-    const usuarios = usuariosGuardados ? JSON.parse(usuariosGuardados) : [];
+    const usuariosGuardados = await this.storageService.get('usuarios');
+    let usuarios = usuariosGuardados ? usuariosGuardados : [];
 
     usuarios.push(usuario);
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    await this.storageService.set('usuarios', usuarios);
+
+    this.nav.navigateRoot('login');
   }
 
   private async mostrarAlerta(mensaje: string) {

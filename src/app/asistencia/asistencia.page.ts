@@ -2,6 +2,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { ClimaService } from '../services/clima.service';
 import { Geolocation } from '@capacitor/geolocation';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-asistencia',
@@ -17,13 +18,13 @@ export class AsistenciaPage implements OnInit {
 
   private climaService: ClimaService;
 
-  constructor(private nav: NavController, private injector: Injector) {
+  constructor(private nav: NavController,private storageService: StorageService, private injector: Injector) {
     this.climaService = this.injector.get(ClimaService);
   }
 
-  ngOnInit() {
-    this.nombreUsuario = localStorage.getItem('usuarioLogueado');
-    const tipoUsuario = localStorage.getItem('tipoUsuario');
+  async ngOnInit() {
+    this.nombreUsuario = await this.storageService.get('usuarioLogueado');
+    const tipoUsuario = await this.storageService.get('tipoUsuario');
     this.esAdmin = tipoUsuario === 'admin';
 
     this.getClimaData();
@@ -56,10 +57,10 @@ export class AsistenciaPage implements OnInit {
     }, 3000);
   }
 
-  logout() {
-    localStorage.removeItem('ingresado');
-    localStorage.removeItem('usuarioLogueado');
-    localStorage.removeItem('tipoUsuario');
+  async logout() {
+    await this.storageService.remove('ingresado');
+    await this.storageService.remove('usuarioLogueado');
+    await this.storageService.remove('tipoUsuario');
     this.nav.navigateRoot('/login');
   }
 }
