@@ -63,3 +63,29 @@ ion-footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 }
+
+ion-button[color="tertiary"] {
+  color: #1e88e5;
+  font-weight: bold;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+ion-button[color="tertiary"]:hover {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+ion-button[color="tertiary"] strong {
+  color: #1e88e5;
+  font-weight: bold;
+}
+
+ion-button[color="tertiary"] strong:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+ion-button[color="tertiary"]:hover strong {
+  color: #0d47a1;
+}

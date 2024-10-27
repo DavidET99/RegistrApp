@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="back-button" text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title ion-text-center">
+      <img src="assets/img/logo_duoc.png" alt="Logo" class="header-logo" />
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="recover-container">
+    <ion-card class="recover-card">
+      <ion-card-content>
+        <form [formGroup]="formRecuperar" (ngSubmit)="recuperar()">
+          <ion-item class="recover-input">
+            <ion-label position="floating">Nombre de Usuario</ion-label>
+            <ion-input formControlName="nombre"></ion-input>
+          </ion-item>
+          <ion-item class="recover-input">
+            <ion-label position="floating">Nueva Contraseña</ion-label>
+            <ion-input type="password" formControlName="nuevaPass"></ion-input>
+          </ion-item>
+          <ion-button expand="full" type="submit" [disabled]="!formRecuperar.valid">Recuperar Contraseña</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">RegistrApp © 2024</ion-title>
+  </ion-toolbar>
+</ion-footer>

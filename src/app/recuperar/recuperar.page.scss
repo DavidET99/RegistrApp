@@ -1,5 +1,5 @@
 .header-toolbar {
-  --background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+  --background: linear-gradient(135deg, #4f46e5, #3730a3);
   --color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -14,12 +14,6 @@
   margin-right: 10px;
 }
 
-.back-button {
-  --color: #ffffff;
-  --icon: url('/assets/icons/arrow-back.svg');
-  --icon-size: 24px;
-}
-
 @keyframes animarFondo {
   0% {
     background-position: 0% 50%;
@@ -32,25 +26,25 @@
   }
 }
 
-.register-container {
+.recover-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
   padding: 20px;
-  background: linear-gradient(270deg, #15b8ce, #0599d3, #1fa387, #1a9bce, #806db3);
+  background: linear-gradient(270deg, #3b82f6, #6366f1, #4f46e5, #3730a3, #312e81);
   background-size: 400% 400%;
   animation: animarFondo 15s ease infinite;
 }
 
-.register-card {
+.recover-card {
   width: 100%;
   max-width: 400px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
 
-.register-input {
+.recover-input {
   margin-bottom: 15px;
 }
 
@@ -61,7 +55,7 @@ ion-button {
 
 ion-footer {
   ion-toolbar {
-    --background: linear-gradient(135deg, #0599d3, #1e3a8a);
+    --background: linear-gradient(135deg, #4f46e5, #312e81);
     --color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }

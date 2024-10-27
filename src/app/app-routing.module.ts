@@ -30,9 +30,14 @@ const routes: Routes = [
     loadChildren: () => import('./pagina-ne/pagina-ne.module').then(m => m.PaginaNEPageModule)
   },
   {
+    path: 'recuperar',
+    loadChildren: () => import('./recuperar/recuperar.module').then( m => m.RecuperarPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'pagina-ne'
-  }
+  },
+
 ];
 
 @NgModule({
