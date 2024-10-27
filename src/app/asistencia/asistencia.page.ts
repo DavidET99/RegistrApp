@@ -20,8 +20,12 @@ export class AsistenciaPage implements OnInit {
 
   private climaService: ClimaService;
 
-  constructor(private nav: NavController,private storageService: StorageService,
-    private injector: Injector, private platform: Platform) {
+  constructor(
+    private nav: NavController,
+    private storageService: StorageService,
+    private injector: Injector,
+    private platform: Platform
+  ) {
     this.climaService = this.injector.get(ClimaService);
   }
 
@@ -41,7 +45,6 @@ export class AsistenciaPage implements OnInit {
 
       this.climaService.getClima(lat, lon).subscribe((data) => {
         this.climaInfo = data;
-        console.log('Información del clima:', data);
       });
     } catch (error) {
       console.error('Error obteniendo la ubicación:', error);
@@ -64,10 +67,16 @@ export class AsistenciaPage implements OnInit {
 
   async scanQRCode() {
     try {
-      const result = await BarcodeScanner.scan() as any;
-      console.log(result);
+      const status = await BarcodeScanner.requestPermissions();
+      if (status.camera !== 'granted') {
+        alert('Permiso de cámara no concedido. Habilítelo en la configuración.');
+        return;
+      }
 
-      if (result && result.content) {
+      const result = await BarcodeScanner.scan() as any;
+      console.log('Resultado del escaneo:', result);
+
+      if (result?.hasContent) {
         const content = result.content;
 
         if (content === this.qrCodeData) {
@@ -77,13 +86,16 @@ export class AsistenciaPage implements OnInit {
           alert('Código QR no válido');
         }
       } else {
-        alert('No se encontró ningún código QR.');
+        alert('No se encontró ningún código QR o el escaneo fue cancelado.');
       }
+
     } catch (error) {
-      console.error('Error escaneando el código:', error);
-      alert('Error escaneando el código QR');
+      console.error('Error escaneando el código QR:', error);
+      alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
     }
   }
+
+
 
 
   async logout() {
