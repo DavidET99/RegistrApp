@@ -1,9 +1,9 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, AlertController } from '@ionic/angular';
 import { ClimaService } from '../services/clima.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { StorageService } from '../services/storage.service';
-import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
 
 @Component({
   selector: 'app-asistencia',
@@ -17,6 +17,7 @@ export class AsistenciaPage implements OnInit {
   esAdmin: boolean = false;
   climaInfo: any;
   qrCodeData: string = '';
+  isSupported = false;
 
   private climaService: ClimaService;
 
@@ -24,7 +25,7 @@ export class AsistenciaPage implements OnInit {
     private nav: NavController,
     private storageService: StorageService,
     private injector: Injector,
-    private platform: Platform
+    private alertController: AlertController
   ) {
     this.climaService = this.injector.get(ClimaService);
   }
@@ -33,6 +34,8 @@ export class AsistenciaPage implements OnInit {
     this.nombreUsuario = await this.storageService.get('usuarioLogueado');
     const tipoUsuario = await this.storageService.get('tipoUsuario');
     this.esAdmin = tipoUsuario === 'admin';
+
+    this.isSupported = true;
 
     this.getClimaData();
   }
@@ -55,9 +58,8 @@ export class AsistenciaPage implements OnInit {
     if (!this.esAdmin) {
       return;
     }
-
+    // Generar los datos para el QR
     this.qrCodeData = `Asistencia - ${this.nombreUsuario} - ${new Date().toLocaleString()}`;
-
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
@@ -67,19 +69,13 @@ export class AsistenciaPage implements OnInit {
 
   async scanQRCode() {
     try {
-      const status = await BarcodeScanner.requestPermissions();
-      if (status.camera !== 'granted') {
-        alert('Permiso de cámara no concedido. Habilítelo en la configuración.');
-        return;
-      }
+      const result = await CapacitorBarcodeScanner.scanBarcode({
+        hint: CapacitorBarcodeScannerTypeHint.ALL
+      });
 
-      const result = await BarcodeScanner.scan() as any;
-      console.log('Resultado del escaneo:', result);
-
-      if (result?.hasContent) {
-        const content = result.content;
-
-        if (content === this.qrCodeData) {
+      const scannedData = result.ScanResult;
+      if (scannedData) {
+        if (scannedData === this.qrCodeData) {
           await this.storageService.set(`presente_${this.nombreUsuario}`, true);
           alert('Asistencia registrada correctamente');
         } else {
@@ -88,15 +84,20 @@ export class AsistenciaPage implements OnInit {
       } else {
         alert('No se encontró ningún código QR o el escaneo fue cancelado.');
       }
-
     } catch (error) {
       console.error('Error escaneando el código QR:', error);
       alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
     }
   }
 
-
-
+  async presentAlert(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Permiso denegado',
+      message: 'Por favor, conceda permiso a la cámara para usar el escáner de códigos.',
+      buttons: ['OK'],
+    });
+    await alert.present();
+  }
 
   async logout() {
     await this.storageService.remove('ingresado');
