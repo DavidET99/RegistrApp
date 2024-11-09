@@ -34,9 +34,7 @@ export class AsistenciaPage implements OnInit {
     this.nombreUsuario = await this.storageService.get('usuarioLogueado');
     const tipoUsuario = await this.storageService.get('tipoUsuario');
     this.esAdmin = tipoUsuario === 'admin';
-
     this.isSupported = true;
-
     this.getClimaData();
   }
 
@@ -45,7 +43,6 @@ export class AsistenciaPage implements OnInit {
       const coordinates = await Geolocation.getCurrentPosition();
       const lat = coordinates.coords.latitude;
       const lon = coordinates.coords.longitude;
-
       this.climaService.getClima(lat, lon).subscribe((data) => {
         this.climaInfo = data;
       });
@@ -58,8 +55,7 @@ export class AsistenciaPage implements OnInit {
     if (!this.esAdmin) {
       return;
     }
-    // Generar los datos para el QR
-    this.qrCodeData = `Asistencia - ${this.nombreUsuario} - ${new Date().toLocaleString()}`;
+    this.qrCodeData = `Asistencia-${new Date().toISOString()}`;
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
@@ -79,7 +75,7 @@ export class AsistenciaPage implements OnInit {
           await this.storageService.set(`presente_${this.nombreUsuario}`, true);
           alert('Asistencia registrada correctamente');
         } else {
-          alert('Código QR no válido');
+          alert('Código QR no válido para esta sesión de asistencia');
         }
       } else {
         alert('No se encontró ningún código QR o el escaneo fue cancelado.');
