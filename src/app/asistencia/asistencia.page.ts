@@ -18,6 +18,7 @@ export class AsistenciaPage implements OnInit {
   climaInfo: any;
   qrCodeData: string = '';
   isSupported = false;
+  asistencias: string[] = [];
 
   private climaService: ClimaService;
 
@@ -55,7 +56,8 @@ export class AsistenciaPage implements OnInit {
     if (!this.esAdmin) {
       return;
     }
-    this.qrCodeData = `Asistencia-${new Date().toISOString()}`;
+    const fechaActual = new Date().toISOString().split('T')[0];
+    this.qrCodeData = `Asistencia-${fechaActual}`;
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
@@ -65,26 +67,35 @@ export class AsistenciaPage implements OnInit {
 
   async scanQRCode() {
     try {
-      const result = await CapacitorBarcodeScanner.scanBarcode({
-        hint: CapacitorBarcodeScannerTypeHint.ALL
-      });
+        const result = await CapacitorBarcodeScanner.scanBarcode({
+            hint: CapacitorBarcodeScannerTypeHint.ALL
+        });
 
-      const scannedData = result.ScanResult;
-      if (scannedData) {
-        if (scannedData === this.qrCodeData) {
-          await this.storageService.set(`presente_${this.nombreUsuario}`, true);
-          alert('Asistencia registrada correctamente');
+        const scannedData = result.ScanResult?.trim();
+        const fechaActual = new Date().toISOString().split('T')[0];
+        const validQRCodeData = `Asistencia-${fechaActual}`;
+
+        if (scannedData) {
+            console.log('Código esperado:', validQRCodeData);
+            console.log('Código escaneado:', scannedData);
+            console.log('Usuario:', this.nombreUsuario);
+
+            if (scannedData === validQRCodeData) {
+                await this.storageService.set(`presente_${this.nombreUsuario}`, true);
+                console.log(`Asistencia registrada: presente_${this.nombreUsuario} = true`);
+                alert('Asistencia registrada correctamente');
+            } else {
+                alert('Código QR no válido para esta sesión de asistencia');
+            }
         } else {
-          alert('Código QR no válido para esta sesión de asistencia');
+            alert('No se encontró ningún código QR o el escaneo fue cancelado.');
         }
-      } else {
-        alert('No se encontró ningún código QR o el escaneo fue cancelado.');
-      }
     } catch (error) {
-      console.error('Error escaneando el código QR:', error);
-      alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
+        console.error('Error escaneando el código QR:', error);
+        alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
     }
-  }
+}
+
 
   async presentAlert(): Promise<void> {
     const alert = await this.alertController.create({
@@ -94,6 +105,39 @@ export class AsistenciaPage implements OnInit {
     });
     await alert.present();
   }
+
+  async verAsistencias() {
+    this.asistencias = [];
+    const keys = await this.storageService.getAllKeys();
+    console.log('Claves almacenadas:', keys);
+
+    for (const key of keys) {
+        if (key.startsWith('presente_')) {
+            const usuario = key.replace('presente_', '');
+            const isPresente = await this.storageService.get(key);
+            console.log(`Clave: ${key}, Usuario: ${usuario}, Presente: ${isPresente}`);
+            if (isPresente) {
+                this.asistencias.push(usuario);
+            }
+        }
+    }
+
+    this.mostrarAsistencias();
+}
+
+
+  async mostrarAsistencias() {
+    const alert = await this.alertController.create({
+      header: 'Lista de Asistencias',
+      message: this.asistencias.length
+        ? this.asistencias.join('<br>')
+        : 'No hay registros de asistencia',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
 
   async logout() {
     await this.storageService.remove('ingresado');

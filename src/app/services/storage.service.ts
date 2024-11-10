@@ -31,4 +31,8 @@ export class StorageService {
   async clear() {
     await this._storage?.clear();
   }
+
+  async getAllKeys(): Promise<string[]> {
+    return await this._storage?.keys() || [];
+  }
 }

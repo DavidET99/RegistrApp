@@ -42,12 +42,12 @@
                 <ion-icon slot="start" name="qr-code-outline"></ion-icon>
                 Generar código
               </ion-button>
+              <button *ngIf="esAdmin" (click)="verAsistencias()">Ver Asistencias</button>
               <div *ngIf="isLoading" class="loading-container">
                 <ion-spinner class="loading-spinner"></ion-spinner>
                 <p class="loading-message">Generando código, espere...</p>
               </div>
             </ion-col>
-
             <ion-col size="auto">
               <ion-button expand="block" fill="solid" color="secondary" (click)="scanQRCode()">
                 <ion-icon slot="start" name="camera-outline"></ion-icon>
@@ -74,7 +74,7 @@
       </ion-header>
       <ion-content>
         <div class="qr-container">
-          <qrcode [qrdata]="qrCodeData" [width]="545"></qrcode>
+          <qrcode [qrdata]="qrCodeData" [width]="445"></qrcode>
         </div>
       </ion-content>
     </ng-template>
