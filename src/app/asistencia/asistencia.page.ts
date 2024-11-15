@@ -31,6 +31,12 @@ export class AsistenciaPage implements OnInit {
     this.climaService = this.injector.get(ClimaService);
   }
 
+  private ASIGNATURAS: Record<number, { nombre: string; seccion: string; sala: string }> = {
+    1: { nombre: 'Programación de apps móviles', seccion: '005D', sala: '308' },
+    2: { nombre: 'Deep Learning', seccion: '001D', sala: 'L4' },
+    3: { nombre: 'Proceso de portafolio 6', seccion: '010D', sala: '804' }
+  };
+
   async ngOnInit() {
     this.nombreUsuario = await this.storageService.get('usuarioLogueado');
     const tipoUsuario = await this.storageService.get('tipoUsuario');
@@ -52,12 +58,13 @@ export class AsistenciaPage implements OnInit {
     }
   }
 
-  onGenerateCode() {
+  onGenerateCode(asignaturaId: number) {
     if (!this.esAdmin) {
       return;
     }
+    const asignatura = this.ASIGNATURAS[asignaturaId];
     const fechaActual = new Date().toISOString().split('T')[0];
-    this.qrCodeData = `Asistencia-${fechaActual}`;
+    this.qrCodeData = `${asignaturaId}|${asignatura.seccion}|${asignatura.sala}|${fechaActual}`;
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
@@ -65,66 +72,51 @@ export class AsistenciaPage implements OnInit {
     }, 3000);
   }
 
-  async scanQRCode() {
+  async scanQRCode(asignaturaId: number) {
     try {
-        const result = await CapacitorBarcodeScanner.scanBarcode({
-            hint: CapacitorBarcodeScannerTypeHint.ALL
-        });
+      const result = await CapacitorBarcodeScanner.scanBarcode({
+        hint: CapacitorBarcodeScannerTypeHint.ALL
+      });
 
-        const scannedData = result.ScanResult?.trim();
-        const fechaActual = new Date().toISOString().split('T')[0];
-        const validQRCodeData = `Asistencia-${fechaActual}`;
+      const scannedData = result.ScanResult?.trim();
+      const asignatura = this.ASIGNATURAS[asignaturaId];
+      const fechaActual = new Date().toISOString().split('T')[0];
+      const validQRCodeData = `${asignaturaId}|${asignatura.seccion}|${asignatura.sala}|${fechaActual}`;
 
-        if (scannedData) {
-            console.log('Código esperado:', validQRCodeData);
-            console.log('Código escaneado:', scannedData);
-            console.log('Usuario:', this.nombreUsuario);
-
-            if (scannedData === validQRCodeData) {
-                await this.storageService.set(`presente_${this.nombreUsuario}`, true);
-                console.log(`Asistencia registrada: presente_${this.nombreUsuario} = true`);
-                alert('Asistencia registrada correctamente');
-            } else {
-                alert('Código QR no válido para esta sesión de asistencia');
-            }
+      if (scannedData) {
+        if (scannedData === validQRCodeData) {
+          await this.storageService.set(`asistencia_${this.nombreUsuario}_${asignaturaId}`, {
+            nombre: asignatura.nombre,
+            fecha: fechaActual,
+            seccion: asignatura.seccion,
+            sala: asignatura.sala
+          });
+          alert('Asistencia registrada correctamente');
         } else {
-            alert('No se encontró ningún código QR o el escaneo fue cancelado.');
+          alert('Código QR no válido para esta sesión de asistencia');
         }
+      } else {
+        alert('No se encontró ningún código QR o el escaneo fue cancelado.');
+      }
     } catch (error) {
-        console.error('Error escaneando el código QR:', error);
-        alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
+      console.error('Error escaneando el código QR:', error);
+      alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
     }
-}
-
-
-  async presentAlert(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Permiso denegado',
-      message: 'Por favor, conceda permiso a la cámara para usar el escáner de códigos.',
-      buttons: ['OK'],
-    });
-    await alert.present();
   }
 
   async verAsistencias() {
     this.asistencias = [];
     const keys = await this.storageService.getAllKeys();
-    console.log('Claves almacenadas:', keys);
 
     for (const key of keys) {
-        if (key.startsWith('presente_')) {
-            const usuario = key.replace('presente_', '');
-            const isPresente = await this.storageService.get(key);
-            console.log(`Clave: ${key}, Usuario: ${usuario}, Presente: ${isPresente}`);
-            if (isPresente) {
-                this.asistencias.push(usuario);
-            }
-        }
+      if (key.startsWith('asistencia_')) {
+        const { nombre, fecha, seccion, sala } = await this.storageService.get(key);
+        this.asistencias.push(`${nombre} - ${seccion} - Sala ${sala} - Fecha: ${fecha}`);
+      }
     }
 
     this.mostrarAsistencias();
-}
-
+  }
 
   async mostrarAsistencias() {
     const alert = await this.alertController.create({
@@ -137,7 +129,6 @@ export class AsistenciaPage implements OnInit {
 
     await alert.present();
   }
-
 
   async logout() {
     await this.storageService.remove('ingresado');

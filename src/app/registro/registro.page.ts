@@ -7,6 +7,14 @@ interface Usuario {
   nombre: string;
   pass: string;
   tipo: string;
+  asignaturas: Asignatura[];
+}
+
+interface Asignatura {
+  id: number;
+  nombre: string;
+  seccion: string;
+  sala: string;
 }
 
 @Component({
@@ -16,6 +24,12 @@ interface Usuario {
 })
 export class RegistroPage implements OnInit {
   formRegistro: FormGroup;
+
+  private asignaturasPredefinidas: Asignatura[] = [
+    { id: 1, nombre: 'Programación de aplicaciones móviles', seccion: '005D', sala: '308' },
+    { id: 2, nombre: 'Deep Learning', seccion: '001D', sala: 'L4' },
+    { id: 3, nombre: 'Proceso de portafolio 6', seccion: '010D', sala: '804' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -47,15 +61,21 @@ export class RegistroPage implements OnInit {
     const usuario: Usuario = {
       nombre: f.nombre,
       pass: f.pass,
-      tipo: 'alumno'
+      tipo: 'alumno',
+      asignaturas: this.asignaturasPredefinidas.map(asignatura => ({
+        ...asignatura,
+        asistenciaId: `asistencia_${f.nombre}_${asignatura.id}`
+      }))
     };
 
+    // Guardar en Storage
     const usuariosGuardados = await this.storageService.get('usuarios');
     let usuarios = usuariosGuardados ? usuariosGuardados : [];
 
     usuarios.push(usuario);
     await this.storageService.set('usuarios', usuarios);
 
+    console.log(`Usuario registrado con asignaturas: ${JSON.stringify(usuario.asignaturas)}`);
     this.nav.navigateRoot('login');
   }
 

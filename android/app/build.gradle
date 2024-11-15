@@ -40,6 +40,10 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    implementation "androidx.camera:camera-core:1.4.0"
+    implementation "androidx.camera:camera-lifecycle:1.4.0"
+    implementation "androidx.camera:camera-view:1.4.0"
+
 }
 
 apply from: 'capacitor.build.gradle'

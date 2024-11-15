@@ -3,5 +3,8 @@
     "@ionic/angular/common",
     "@ionic/angular/standalone"
   ],
-  "java.configuration.updateBuildConfiguration": "automatic"
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "cSpell.words": [
+    "Registr"
+  ]
 }
