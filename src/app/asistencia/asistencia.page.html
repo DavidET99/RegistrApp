@@ -108,6 +108,39 @@
           </ion-card-content>
         </ion-card>
 
+        <ion-card *ngIf="mostrarAsistencias && asistencias.length > 0">
+          <ion-card-header>
+            <ion-card-title>Asistencias Registradas</ion-card-title>
+            <ion-button slot="end" color="danger" size="small" (click)="cerrarTabla()">Cerrar</ion-button>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="table-container">
+              <table class="asistencias-table">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Asignatura</th>
+                    <th>Sección</th>
+                    <th>Sala</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let asistencia of asistencias">
+                    <td>{{ asistencia.split(' - ')[0].split(': ')[1] }}</td>
+                    <td>{{ asistencia.split(' - ')[1] }}</td>
+                    <td>{{ asistencia.split(' - ')[2].split(': ')[1] }}</td>
+                    <td>{{ asistencia.split(' - ')[3].split(': ')[1] }}</td>
+                    <td>{{ asistencia.split(' - ')[4].split(': ')[1] }}</td>
+                    <td>{{ asistencia.split(' - ')[5] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
         <ion-button *ngIf="esAdmin" expand="block" color="primary" (click)="verAsistencias()">
           Ver Asistencias
         </ion-button>

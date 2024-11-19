@@ -111,24 +111,54 @@ export class AsistenciaPage implements OnInit {
     for (const key of keys) {
       if (key.startsWith('asistencia_')) {
         const { nombre, fecha, seccion, sala } = await this.storageService.get(key);
-        this.asistencias.push(`${nombre} - ${seccion} - Sala ${sala} - Fecha: ${fecha}`);
+        const usuario = key.split('_')[1];
+        this.asistencias.push(
+          `Usuario: ${usuario} - ${nombre} - Sección: ${seccion} - Sala: ${sala} - Fecha: ${fecha} - Presente`
+        );
       }
     }
-
-    this.mostrarAsistencias();
   }
+
+
 
   async mostrarAsistencias() {
     const alert = await this.alertController.create({
       header: 'Lista de Asistencias',
-      message: this.asistencias.length
-        ? this.asistencias.join('<br>')
-        : 'No hay registros de asistencia',
-      buttons: ['OK']
+      message: `
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="border: 1px solid black; padding: 5px;">Usuario</th>
+              <th style="border: 1px solid black; padding: 5px;">Asignatura</th>
+              <th style="border: 1px solid black; padding: 5px;">Sección</th>
+              <th style="border: 1px solid black; padding: 5px;">Sala</th>
+              <th style="border: 1px solid black; padding: 5px;">Fecha</th>
+              <th style="border: 1px solid black; padding: 5px;">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${this.asistencias
+              .map(
+                (asistencia) =>
+                  `<tr>
+                    <td style="border: 1px solid black; padding: 5px;">${asistencia.split(' - ')[0].split(': ')[1]}</td>
+                    <td style="border: 1px solid black; padding: 5px;">${asistencia.split(' - ')[1]}</td>
+                    <td style="border: 1px solid black; padding: 5px;">${asistencia.split(' - ')[2].split(': ')[1]}</td>
+                    <td style="border: 1px solid black; padding: 5px;">${asistencia.split(' - ')[3].split(': ')[1]}</td>
+                    <td style="border: 1px solid black; padding: 5px;">${asistencia.split(' - ')[4].split(': ')[1]}</td>
+                    <td style="border: 1px solid black; padding: 5px;">${asistencia.split(' - ')[5]}</td>
+                  </tr>`
+              )
+              .join('')}
+          </tbody>
+        </table>
+      `,
+      buttons: ['OK'],
     });
 
     await alert.present();
   }
+
 
   async logout() {
     await this.storageService.remove('ingresado');
