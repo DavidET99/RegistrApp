@@ -33,9 +33,11 @@
     <ion-card class="welcome-card">
       <ion-card-header>
         <ion-card-title>Bienvenido, {{ nombreUsuario }}!</ion-card-title>
+        <ion-button *ngIf="esAdmin" expand="block" color="primary" (click)="verAsistencias()">
+          Ver Asistencias
+        </ion-button>
       </ion-card-header>
       <ion-card-content>
-
         <ion-card>
           <ion-card-header>
             <ion-card-title>Programación de apps móviles</ion-card-title>
@@ -107,9 +109,6 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-        <ion-button *ngIf="esAdmin" expand="block" color="primary" (click)="verAsistencias()">
-          Ver Asistencias
-        </ion-button>
 
       </ion-card-content>
     </ion-card>

@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
 import { ClimaService } from '../services/clima.service';
-import { Geolocation } from '@capacitor/geolocation';
+import { Geolocation, PermissionStatus } from '@capacitor/geolocation';
 import { StorageService } from '../services/storage.service';
 import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
 
@@ -44,13 +44,49 @@ export class AsistenciaPage implements OnInit {
     this.esAdmin = tipoUsuario === 'admin';
     this.isSupported = true;
     this.getClimaData();
+    const hasPermission = await this.requestLocationPermission();
+    if (hasPermission) {
+      this.getClimaData();
+    } else {
+      console.error('No se puede acceder a la ubicación sin permisos.');
+    }
+
+  }
+
+  async requestLocationPermission(): Promise<boolean> {
+    try {
+      const permissions: PermissionStatus = await Geolocation.checkPermissions();
+      if (permissions.location === 'granted') {
+        console.log('Permiso ya otorgado');
+        return true;
+      }
+      if (permissions.location === 'denied') {
+        return false;
+      }
+
+      const request: PermissionStatus = await Geolocation.requestPermissions();
+      if (request.location === 'granted') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
   }
 
   async getClimaData() {
     try {
-      const coordinates = await Geolocation.getCurrentPosition();
+
+      const coordinates = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+
       const lat = coordinates.coords.latitude;
       const lon = coordinates.coords.longitude;
+
       this.climaService.getClima(lat, lon).subscribe((data) => {
         this.climaInfo = data;
       });
@@ -58,6 +94,7 @@ export class AsistenciaPage implements OnInit {
       console.error('Error obteniendo la ubicación:', error);
     }
   }
+
 
   onGenerateCode(asignaturaId: number) {
     if (!this.esAdmin) {
