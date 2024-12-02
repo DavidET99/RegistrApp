@@ -57,6 +57,14 @@ export class RegistroPage implements OnInit {
     }
 
     const f = this.formRegistro.value;
+    const nombreUsuario = f.nombre;
+    const usuariosGuardados = await this.storageService.get('usuarios');
+    let usuarios = usuariosGuardados ? usuariosGuardados : [];
+    const usuarioExistente = usuarios.find((usuario: Usuario) => usuario.nombre.toLowerCase() === nombreUsuario.toLowerCase());
+    if (usuarioExistente) {
+      await this.mostrarAlerta('Este nombre de usuario ya está registrado. Por favor, elija otro.');
+      return;
+    }
 
     const usuario: Usuario = {
       nombre: f.nombre,
@@ -68,16 +76,13 @@ export class RegistroPage implements OnInit {
       }))
     };
 
-    // Guardar en Storage
-    const usuariosGuardados = await this.storageService.get('usuarios');
-    let usuarios = usuariosGuardados ? usuariosGuardados : [];
-
     usuarios.push(usuario);
     await this.storageService.set('usuarios', usuarios);
 
     console.log(`Usuario registrado con asignaturas: ${JSON.stringify(usuario.asignaturas)}`);
     this.nav.navigateRoot('login');
   }
+
 
   private async mostrarAlerta(mensaje: string) {
     const alert = await this.alertController.create({

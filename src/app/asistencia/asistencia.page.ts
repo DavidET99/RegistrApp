@@ -21,6 +21,7 @@ export class AsistenciaPage implements OnInit {
   isSupported = false;
   asistencias: any[] = [];
 
+
   private climaService: ClimaService;
 
   constructor(
@@ -123,7 +124,14 @@ export class AsistenciaPage implements OnInit {
 
       if (scannedData) {
         if (scannedData === validQRCodeData) {
-          await this.storageService.set(`asistencia_${this.nombreUsuario}_${asignaturaId}`, {
+          const asistenciaKey = `asistencia_${this.nombreUsuario}_${asignaturaId}_${fechaActual}`;
+          const asistenciaExistente = await this.storageService.get(asistenciaKey);
+
+          if (asistenciaExistente) {
+            alert('Ya se registró asistencia para esta asignatura el día de hoy.');
+            return;
+          }
+          await this.storageService.set(asistenciaKey, {
             nombre: asignatura.nombre,
             fecha: fechaActual,
             seccion: asignatura.seccion,
@@ -141,6 +149,7 @@ export class AsistenciaPage implements OnInit {
       alert('Hubo un problema escaneando el código QR. Intente de nuevo.');
     }
   }
+
 
   async verAsistencias() {
     this.asistencias = [];
