@@ -16,6 +16,7 @@ export class AsistenciaPage implements OnInit {
   isLoading = false;
   message: string = '';
   isModalOpenTable = false;
+  isModalOpenTable2 = false;
   esAdmin: boolean = false;
   climaInfo: any;
   qrCodeData: string = '';
@@ -162,7 +163,6 @@ export class AsistenciaPage implements OnInit {
     }
   }
 
-
   async verAsistencias() {
     this.asistencias = [];
     const keys = await this.storageService.getAllKeys();
@@ -187,6 +187,30 @@ export class AsistenciaPage implements OnInit {
       this.isModalOpenTable = true;
     }
   }
+
+  async verMisAsistencias() {
+    this.asistencias = [];
+    const keys = await this.storageService.getAllKeys();
+    for (const key of keys) {
+      if (key.startsWith(`asistencia_${this.nombreUsuario}_`)) {
+        const { nombre, fecha, seccion, sala } = await this.storageService.get(key);
+        this.asistencias.push(
+          `${nombre} - Sección: ${seccion} - Sala: ${sala} - Fecha: ${fecha} - Presente`
+        );
+      }
+    }
+    if (this.asistencias.length === 0) {
+      const alert = await this.alertController.create({
+        header: 'Sin asistencias',
+        message: 'No tienes asistencias registradas.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } else {
+      this.isModalOpenTable2 = true;
+    }
+  }
+
 
   async logout() {
     await this.storageService.remove('ingresado');

@@ -36,6 +36,7 @@
         <ion-button *ngIf="esAdmin" expand="block" color="primary" (click)="verAsistencias()">
           Ver Asistencias
         </ion-button>
+        <ion-button *ngIf="!esAdmin" expand="block" (click)="verMisAsistencias()">Ver Mis Asistencias</ion-button>
       </ion-card-header>
       <ion-card-content>
 
@@ -151,7 +152,6 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-
     <ion-content>
       <div class="table-container" *ngIf="asistencias.length > 0; else noAsistencias">
         <table class="asistencias-table">
@@ -184,4 +184,47 @@
       </ng-template>
     </ion-content>
   </ion-modal>
+
+  <ion-modal [isOpen]="isModalOpenTable2" (ionModalDidDismiss)="isModalOpenTable2 = false">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Asistencias registradas</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="isModalOpenTable2 = false">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div class="table2-container" *ngIf="asistencias.length > 0; else noAsistencias">
+        <table class="misasistencias-table">
+          <thead>
+            <tr>
+              <th>Asignatura</th>
+              <th>Sección</th>
+              <th>Sala</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let asistencia of asistencias">
+              <td>{{ asistencia.split(' - ')[0] }}</td>
+              <td>{{ asistencia.split(' - ')[1].split(': ')[1] }}</td>
+              <td>{{ asistencia.split(' - ')[2].split(': ')[1] }}</td>
+              <td>{{ asistencia.split(' - ')[3].split(': ')[1] }}</td>
+              <td>{{ asistencia.split(' - ')[4] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noAsistencias>
+        <div class="no-asistencias">
+          <p>No hay asistencias registradas.</p>
+        </div>
+      </ng-template>
+    </ion-content>
+  </ion-modal>
+
 </ion-content>
