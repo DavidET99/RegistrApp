@@ -114,6 +114,11 @@
       </ion-card-content>
     </ion-card>
   </div>
+  <div *ngIf="isLoading" class="loading-overlay">
+    <ion-spinner></ion-spinner>
+    <p>{{ message }}</p>
+  </div>
+
 
   <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="isModalOpen = false">
     <ng-template>
@@ -179,5 +184,4 @@
       </ng-template>
     </ion-content>
   </ion-modal>
-  <ion-loading *ngIf="isLoading" message="Generando código QR..." spinner="crescent"></ion-loading>
 </ion-content>

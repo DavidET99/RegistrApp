@@ -14,6 +14,7 @@ export class AsistenciaPage implements OnInit {
   nombreUsuario: string | null = '';
   isModalOpen = false;
   isLoading = false;
+  message: string = '';
   isModalOpenTable = false;
   esAdmin: boolean = false;
   climaInfo: any;
@@ -101,15 +102,23 @@ export class AsistenciaPage implements OnInit {
     if (!this.esAdmin) {
       return;
     }
-    const asignatura = this.ASIGNATURAS[asignaturaId];
-    const fechaActual = new Date().toISOString().split('T')[0];
-    this.qrCodeData = `${asignaturaId}|${asignatura.seccion}|${asignatura.sala}|${fechaActual}`;
     this.isLoading = true;
+    this.message = 'Generando código...';
+    const asignatura = this.ASIGNATURAS[asignaturaId];
+    const fechaActual = new Date();
+    const fechaFormateada = `${fechaActual.getFullYear()}${(fechaActual.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}${fechaActual.getDate().toString().padStart(2, '0')}`;
+    this.qrCodeData = `${asignaturaId}|${asignatura.seccion}|${asignatura.sala}|${fechaFormateada}`;
+
     setTimeout(() => {
-      this.isLoading = true;
+      this.isLoading = false;
+      this.message = '';
       this.isModalOpen = true;
-    }, 1500);
+    }, 3000);
   }
+
+
 
   async scanQRCode(asignaturaId: number) {
     try {
@@ -119,12 +128,15 @@ export class AsistenciaPage implements OnInit {
 
       const scannedData = result.ScanResult?.trim();
       const asignatura = this.ASIGNATURAS[asignaturaId];
-      const fechaActual = new Date().toISOString().split('T')[0];
-      const validQRCodeData = `${asignaturaId}|${asignatura.seccion}|${asignatura.sala}|${fechaActual}`;
+      const fechaActual = new Date();
+      const fechaFormateada = `${fechaActual.getFullYear()}${(fechaActual.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}${fechaActual.getDate().toString().padStart(2, '0')}`;
+      const validQRCodeData = `${asignaturaId}|${asignatura.seccion}|${asignatura.sala}|${fechaFormateada}`;
 
       if (scannedData) {
         if (scannedData === validQRCodeData) {
-          const asistenciaKey = `asistencia_${this.nombreUsuario}_${asignaturaId}_${fechaActual}`;
+          const asistenciaKey = `asistencia_${this.nombreUsuario}_${asignaturaId}_${fechaFormateada}`;
           const asistenciaExistente = await this.storageService.get(asistenciaKey);
 
           if (asistenciaExistente) {
@@ -133,7 +145,7 @@ export class AsistenciaPage implements OnInit {
           }
           await this.storageService.set(asistenciaKey, {
             nombre: asignatura.nombre,
-            fecha: fechaActual,
+            fecha: fechaFormateada,
             seccion: asignatura.seccion,
             sala: asignatura.sala
           });
